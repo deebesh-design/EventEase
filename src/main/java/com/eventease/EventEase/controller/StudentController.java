@@ -1,5 +1,6 @@
 package com.eventease.EventEase.controller;
 
+import com.eventease.EventEase.dto.StudentDTO;
 import com.eventease.EventEase.entity.Student;
 import com.eventease.EventEase.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,14 @@ public class StudentController {
 
     // CREATE
     @PostMapping
-    public Student addStudent(@RequestBody Student student) {
+    public Student addStudent(@RequestBody StudentDTO dto) {
+
+        Student student = new Student();
+
+        student.setName(dto.getName());
+        student.setEmail(dto.getEmail());
+        student.setPassword(dto.getPassword());
+
         return service.addStudent(student);
     }
 
@@ -38,7 +46,13 @@ public class StudentController {
     @PutMapping("/{id}")
     public Student updateStudent(
             @PathVariable Long id,
-            @RequestBody Student student) {
+            @RequestBody StudentDTO dto) {
+
+        Student student = new Student();
+
+        student.setName(dto.getName());
+        student.setEmail(dto.getEmail());
+        student.setPassword(dto.getPassword());
 
         return service.updateStudent(id, student);
     }

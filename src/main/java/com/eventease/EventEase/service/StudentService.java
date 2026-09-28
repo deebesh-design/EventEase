@@ -15,11 +15,8 @@ public class StudentService {
         this.repository = repository;
     }
 
+    // CREATE
     public Student addStudent(Student student) {
-
-        System.out.println("Name: " + student.getName());
-        System.out.println("Email: " + student.getEmail());
-        System.out.println("Password: " + student.getPassword());
 
         if (student.getName() == null
                 || student.getName().trim().isEmpty()) {
@@ -48,10 +45,13 @@ public class StudentService {
         return repository.save(student);
     }
 
+    // READ ALL
     public List<Student> getAllStudents() {
+
         return repository.findAll();
     }
 
+    // READ ONE
     public Student getStudentById(Long id) {
 
         Student student =
@@ -67,6 +67,7 @@ public class StudentService {
         return student;
     }
 
+    // UPDATE
     public Student updateStudent(
             Long id,
             Student student) {
@@ -105,6 +106,7 @@ public class StudentService {
                 student.getEmail()
         );
 
+        // Update password only if provided
         if (student.getPassword() != null
                 && !student.getPassword().trim().isEmpty()) {
 
@@ -116,6 +118,7 @@ public class StudentService {
         return repository.save(existingStudent);
     }
 
+    // DELETE
     public void deleteStudent(Long id) {
 
         Student student =
@@ -131,6 +134,7 @@ public class StudentService {
         repository.delete(student);
     }
 
+    // LOGIN
     public Student login(
             String email,
             String password) {

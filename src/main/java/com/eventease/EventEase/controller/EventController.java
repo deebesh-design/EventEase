@@ -1,5 +1,6 @@
 package com.eventease.EventEase.controller;
 
+import com.eventease.EventEase.dto.EventDTO;
 import com.eventease.EventEase.entity.Event;
 import com.eventease.EventEase.service.EventService;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +21,19 @@ public class EventController {
     // CREATE EVENT
     // =====================================================
 
-    @PostMapping
+    @PostMapping("/organizer/{organizerId}")
     public Event addEvent(
-            @RequestParam Long organizerId,
-            @RequestBody Event event) {
+            @PathVariable Long organizerId,
+            @RequestBody EventDTO dto) {
 
-        return service.addEvent(
-                organizerId,
-                event
-        );
+        Event event = new Event();
+
+        event.setTitle(dto.getTitle());
+        event.setDate(dto.getDate());
+        event.setVenue(dto.getVenue());
+        event.setCapacity(dto.getCapacity());
+
+        return service.addEvent(organizerId, event);
     }
 
     // =====================================================
@@ -53,63 +58,35 @@ public class EventController {
     }
 
     // =====================================================
-    // GET ORGANIZER EVENTS
+    // GET EVENTS OF ORGANIZER
     // =====================================================
 
     @GetMapping("/organizer/{organizerId}")
     public List<Event> getEventsByOrganizer(
             @PathVariable Long organizerId) {
 
-        return service.getEventsByOrganizer(
-                organizerId
-        );
-    }
-
-    // =====================================================
-    // GET REGISTERED COUNT
-    // =====================================================
-
-    @GetMapping("/{id}/registered-count")
-    public long getRegisteredCount(
-            @PathVariable Long id) {
-
-        return service.getRegisteredCount(id);
-    }
-
-    // =====================================================
-    // GET AVAILABLE SEATS
-    // =====================================================
-
-    @GetMapping("/{id}/available-seats")
-    public long getAvailableSeats(
-            @PathVariable Long id) {
-
-        return service.getAvailableSeats(id);
-    }
-
-    // =====================================================
-    // GET EVENT STATUS
-    // =====================================================
-
-    @GetMapping("/{id}/status")
-    public String getEventStatus(
-            @PathVariable Long id) {
-
-        return service.getEventStatus(id);
+        return service.getEventsByOrganizer(organizerId);
     }
 
     // =====================================================
     // UPDATE EVENT
     // =====================================================
 
-    @PutMapping("/{id}")
+    @PutMapping("/{eventId}/organizer/{organizerId}")
     public Event updateEvent(
-            @PathVariable Long id,
-            @RequestParam Long organizerId,
-            @RequestBody Event event) {
+            @PathVariable Long eventId,
+            @PathVariable Long organizerId,
+            @RequestBody EventDTO dto) {
+
+        Event event = new Event();
+
+        event.setTitle(dto.getTitle());
+        event.setDate(dto.getDate());
+        event.setVenue(dto.getVenue());
+        event.setCapacity(dto.getCapacity());
 
         return service.updateEvent(
-                id,
+                eventId,
                 organizerId,
                 event
         );
@@ -119,16 +96,49 @@ public class EventController {
     // DELETE EVENT
     // =====================================================
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{eventId}/organizer/{organizerId}")
     public String deleteEvent(
-            @PathVariable Long id,
-            @RequestParam Long organizerId) {
+            @PathVariable Long eventId,
+            @PathVariable Long organizerId) {
 
         service.deleteEvent(
-                id,
+                eventId,
                 organizerId
         );
 
         return "Event deleted successfully";
+    }
+
+    // =====================================================
+    // GET REGISTERED COUNT
+    // =====================================================
+
+    @GetMapping("/{eventId}/registered-count")
+    public long getRegisteredCount(
+            @PathVariable Long eventId) {
+
+        return service.getRegisteredCount(eventId);
+    }
+
+    // =====================================================
+    // GET AVAILABLE SEATS
+    // =====================================================
+
+    @GetMapping("/{eventId}/available-seats")
+    public long getAvailableSeats(
+            @PathVariable Long eventId) {
+
+        return service.getAvailableSeats(eventId);
+    }
+
+    // =====================================================
+    // GET EVENT STATUS
+    // =====================================================
+
+    @GetMapping("/{eventId}/status")
+    public String getEventStatus(
+            @PathVariable Long eventId) {
+
+        return service.getEventStatus(eventId);
     }
 }
