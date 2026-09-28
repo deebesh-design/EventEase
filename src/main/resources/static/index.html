@@ -2,25 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><!DOCTYPE html>
-        <html lang="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <head>
-        <meta charset="UTF-8">
-
-        <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-        <title>EventEase - College Event Registration</title>
+    <title>EventEase - College Event Registration</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- =====================================================
-     NAVIGATION BAR
-===================================================== -->
+<!-- ================= NAVBAR ================= -->
 
 <nav class="navbar">
 
@@ -30,16 +21,20 @@
 
     <div class="nav-links">
 
-        <button onclick="showSection('homeSection')">
+        <button onclick="showSection('home')">
             Home
         </button>
 
-        <button onclick="showSection('studentLoginSection')">
-            Student
+        <button onclick="showSection('events')">
+            Events
         </button>
 
-        <button onclick="showSection('organizerLoginSection')">
-            Organizer
+        <button onclick="showSection('studentLogin')">
+            Student Login
+        </button>
+
+        <button onclick="showSection('organizerLogin')">
+            Organizer Login
         </button>
 
     </div>
@@ -47,58 +42,45 @@
 </nav>
 
 
-<!-- =====================================================
-     HOME SECTION
-===================================================== -->
+<!-- ================= HOME ================= -->
 
-<section id="homeSection" class="page-section active-section">
+<section id="home" class="page-section active-section">
 
     <div class="hero">
 
         <h1>Welcome to EventEase</h1>
 
         <p>
-            College Event Registration System
+            Simple College Event Registration System
         </p>
 
-        <p class="description">
-            Easily discover college events, register for events,
-            and manage your registrations in one place.
-        </p>
-
-        <div class="home-buttons">
+        <div class="hero-buttons">
 
             <button
-                    class="primary-button"
-                    onclick="showSection('studentLoginSection')">
-
-                Student Login
-
+                    class="primary-btn"
+                    onclick="showSection('events')">
+                View Events
             </button>
 
             <button
-                    class="secondary-button"
-                    onclick="showSection('organizerLoginSection')">
-
-                Organizer Login
-
+                    class="secondary-btn"
+                    onclick="showSection('studentRegister')">
+                Student Registration
             </button>
 
         </div>
 
     </div>
 
-
-    <!-- BASIC FEATURES -->
 
     <div class="features">
 
         <div class="feature-card">
 
-            <h3>Discover Events</h3>
+            <h3>🎓 Students</h3>
 
             <p>
-                View available technical and cultural events.
+                Register for college events easily.
             </p>
 
         </div>
@@ -106,10 +88,10 @@
 
         <div class="feature-card">
 
-            <h3>Easy Registration</h3>
+            <h3>📅 Events</h3>
 
             <p>
-                Register for events while seats are available.
+                View available college events.
             </p>
 
         </div>
@@ -117,10 +99,21 @@
 
         <div class="feature-card">
 
-            <h3>Manage Events</h3>
+            <h3>👨‍💼 Organizers</h3>
 
             <p>
-                Organizers can create and manage their events.
+                Create and manage events.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <h3>🎟️ Registration</h3>
+
+            <p>
+                Register until seats are full.
             </p>
 
         </div>
@@ -130,59 +123,70 @@
 </section>
 
 
-<!-- =====================================================
-     STUDENT LOGIN
-===================================================== -->
+<!-- ================= EVENTS ================= -->
 
-<section id="studentLoginSection" class="page-section">
+<section id="events" class="page-section">
+
+    <div class="container">
+
+        <h2>Available Events</h2>
+
+        <p class="section-description">
+            Browse all college events.
+        </p>
+
+        <button
+                class="primary-btn"
+                onclick="loadEvents()">
+            Refresh Events
+        </button>
+
+        <div id="eventsContainer" class="cards-container">
+
+            <p>
+                Click "Refresh Events" to load events.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= STUDENT LOGIN ================= -->
+
+<section id="studentLogin" class="page-section">
 
     <div class="form-container">
 
         <h2>Student Login</h2>
 
-        <form id="studentLoginForm">
+        <input
+                type="email"
+                id="studentLoginEmail"
+                placeholder="Email"
+        >
 
-            <label>Email</label>
+        <input
+                type="password"
+                id="studentLoginPassword"
+                placeholder="Password"
+        >
 
-            <input
-                    type="email"
-                    id="studentLoginEmail"
-                    placeholder="Enter your email"
-                    required>
+        <button
+                class="primary-btn"
+                onclick="studentLogin()">
+            Login
+        </button>
 
-
-            <label>Password</label>
-
-            <input
-                    type="password"
-                    id="studentLoginPassword"
-                    placeholder="Enter your password"
-                    required>
-
-
-            <button type="submit" class="primary-button">
-                Login
-            </button>
-
-        </form>
-
-        <p id="studentLoginMessage"
-           class="message">
-        </p>
-
-
-        <p class="form-link">
-
+        <p>
             Don't have an account?
-
             <button
-                    class="text-button"
-                    onclick="showSection('studentRegisterSection')">
-
+                    class="link-btn"
+                    onclick="showSection('studentRegister')">
                 Register
-
             </button>
-
         </p>
 
     </div>
@@ -190,133 +194,110 @@
 </section>
 
 
-<!-- =====================================================
-     STUDENT REGISTER
-===================================================== -->
+<!-- ================= STUDENT REGISTER ================= -->
 
-<section id="studentRegisterSection" class="page-section">
+<section id="studentRegister" class="page-section">
 
     <div class="form-container">
 
         <h2>Student Registration</h2>
 
-        <form id="studentRegisterForm">
+        <input
+                type="text"
+                id="studentName"
+                placeholder="Full Name"
+        >
 
-            <label>Name</label>
+        <input
+                type="email"
+                id="studentEmail"
+                placeholder="Email"
+        >
 
-            <input
-                    type="text"
-                    id="studentName"
-                    placeholder="Enter your name"
-                    required>
-
-
-            <label>Email</label>
-
-            <input
-                    type="email"
-                    id="studentEmail"
-                    placeholder="Enter your email"
-                    required>
-
-
-            <label>Password</label>
-
-            <input
-                    type="password"
-                    id="studentPassword"
-                    placeholder="Create a password"
-                    required>
-
-
-            <button type="submit" class="primary-button">
-                Create Account
-            </button>
-
-        </form>
-
-        <p id="studentRegisterMessage"
-           class="message">
-        </p>
-
-
-        <p class="form-link">
-
-            Already have an account?
-
-            <button
-                    class="text-button"
-                    onclick="showSection('studentLoginSection')">
-
-                Login
-
-            </button>
-
-        </p>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     STUDENT DASHBOARD
-===================================================== -->
-
-<section id="studentDashboardSection"
-         class="page-section">
-
-    <div class="dashboard-header">
-
-        <div>
-
-            <h2>Student Dashboard</h2>
-
-            <p id="studentWelcome">
-                Welcome Student
-            </p>
-
-        </div>
+        <input
+                type="password"
+                id="studentPassword"
+                placeholder="Password"
+        >
 
         <button
-                class="logout-button"
-                onclick="studentLogout()">
-
-            Logout
-
+                class="primary-btn"
+                onclick="registerStudent()">
+            Register
         </button>
+
+        <p>
+            Already have an account?
+            <button
+                    class="link-btn"
+                    onclick="showSection('studentLogin')">
+                Login
+            </button>
+        </p>
 
     </div>
 
+</section>
 
-    <!-- AVAILABLE EVENTS -->
 
-    <div class="dashboard-card">
+<!-- ================= STUDENT DASHBOARD ================= -->
 
-        <h3>Available Events</h3>
+<section id="studentDashboard" class="page-section">
 
-        <div id="eventsContainer">
+    <div class="container">
 
-            <p>
-                Loading events...
-            </p>
+        <div class="dashboard-header">
+
+            <div>
+
+                <h2>Student Dashboard</h2>
+
+                <p id="studentWelcome">
+                    Welcome Student
+                </p>
+
+            </div>
+
+            <button
+                    class="danger-btn"
+                    onclick="studentLogout()">
+                Logout
+            </button>
 
         </div>
 
-    </div>
+
+        <div class="dashboard-card">
+
+            <h3>Available Events</h3>
+
+            <button
+                    class="primary-btn"
+                    onclick="loadStudentEvents()">
+                Refresh Events
+            </button>
+
+            <div
+                    id="studentEventsContainer"
+                    class="cards-container">
+            </div>
+
+        </div>
 
 
-    <!-- MY REGISTRATIONS -->
+        <div class="dashboard-card">
 
-    <div class="dashboard-card">
+            <h3>My Registrations</h3>
 
-        <h3>My Registrations</h3>
+            <button
+                    class="primary-btn"
+                    onclick="loadStudentRegistrations()">
+                Refresh Registrations
+            </button>
 
-        <div id="studentRegistrationsContainer">
-
-            <p>
-                No registrations loaded.
-            </p>
+            <div
+                    id="studentRegistrationsContainer">
+            </div>
 
         </div>
 
@@ -325,58 +306,39 @@
 </section>
 
 
-<!-- =====================================================
-     ORGANIZER LOGIN
-===================================================== -->
+<!-- ================= ORGANIZER LOGIN ================= -->
 
-<section id="organizerLoginSection"
-         class="page-section">
+<section id="organizerLogin" class="page-section">
 
     <div class="form-container">
 
         <h2>Organizer Login</h2>
 
-        <form id="organizerLoginForm">
+        <input
+                type="email"
+                id="organizerLoginEmail"
+                placeholder="Email"
+        >
 
-            <label>Email</label>
+        <input
+                type="password"
+                id="organizerLoginPassword"
+                placeholder="Password"
+        >
 
-            <input
-                    type="email"
-                    id="organizerLoginEmail"
-                    placeholder="Enter organizer email"
-                    required>
+        <button
+                class="primary-btn"
+                onclick="organizerLogin()">
+            Login
+        </button>
 
-
-            <label>Password</label>
-
-            <input
-                    type="password"
-                    id="organizerLoginPassword"
-                    placeholder="Enter your password"
-                    required>
-
-
-            <button type="submit" class="primary-button">
-                Login
-            </button>
-
-        </form>
-
-        <p id="organizerLoginMessage"
-           class="message">
-        </p>
-
-
-        <p class="form-link">
-
+        <p>
             Don't have an account?
 
             <button
-                    class="text-button"
-                    onclick="showSection('organizerRegisterSection')">
-
+                    class="link-btn"
+                    onclick="showSection('organizerRegister')">
                 Register
-
             </button>
 
         </p>
@@ -386,67 +348,45 @@
 </section>
 
 
-<!-- =====================================================
-     ORGANIZER REGISTER
-===================================================== -->
+<!-- ================= ORGANIZER REGISTER ================= -->
 
-<section id="organizerRegisterSection"
-         class="page-section">
+<section id="organizerRegister" class="page-section">
 
     <div class="form-container">
 
         <h2>Organizer Registration</h2>
 
-        <form id="organizerRegisterForm">
+        <input
+                type="text"
+                id="organizerName"
+                placeholder="Organizer Name"
+        >
 
-            <label>Name</label>
+        <input
+                type="email"
+                id="organizerEmail"
+                placeholder="Email"
+        >
 
-            <input
-                    type="text"
-                    id="organizerName"
-                    placeholder="Enter organizer name"
-                    required>
+        <input
+                type="password"
+                id="organizerPassword"
+                placeholder="Password"
+        >
 
+        <button
+                class="primary-btn"
+                onclick="registerOrganizer()">
+            Register
+        </button>
 
-            <label>Email</label>
-
-            <input
-                    type="email"
-                    id="organizerEmail"
-                    placeholder="Enter organizer email"
-                    required>
-
-
-            <label>Password</label>
-
-            <input
-                    type="password"
-                    id="organizerPassword"
-                    placeholder="Create a password"
-                    required>
-
-
-            <button type="submit" class="primary-button">
-                Create Account
-            </button>
-
-        </form>
-
-        <p id="organizerRegisterMessage"
-           class="message">
-        </p>
-
-
-        <p class="form-link">
-
+        <p>
             Already have an account?
 
             <button
-                    class="text-button"
-                    onclick="showSection('organizerLoginSection')">
-
+                    class="link-btn"
+                    onclick="showSection('organizerLogin')">
                 Login
-
             </button>
 
         </p>
@@ -456,236 +396,114 @@
 </section>
 
 
-<!-- =====================================================
-     ORGANIZER DASHBOARD
-===================================================== -->
+<!-- ================= ORGANIZER DASHBOARD ================= -->
 
-<section id="organizerDashboardSection"
-         class="page-section">
+<section id="organizerDashboard" class="page-section">
 
-    <div class="dashboard-header">
+    <div class="container">
 
-        <div>
+        <div class="dashboard-header">
 
-            <h2>Organizer Dashboard</h2>
+            <div>
 
-            <p id="organizerWelcome">
-                Welcome Organizer
-            </p>
+                <h2>Organizer Dashboard</h2>
 
-        </div>
-
-        <button
-                class="logout-button"
-                onclick="organizerLogout()">
-
-            Logout
-
-        </button>
-
-    </div>
-
-
-    <!-- CREATE EVENT -->
-
-    <div class="dashboard-card">
-
-        <h3>Create New Event</h3>
-
-        <form id="createEventForm">
-
-            <div class="form-grid">
-
-                <div>
-
-                    <label>Event Title</label>
-
-                    <input
-                            type="text"
-                            id="eventTitle"
-                            placeholder="Enter event title"
-                            required>
-
-                </div>
-
-
-                <div>
-
-                    <label>Date</label>
-
-                    <input
-                            type="date"
-                            id="eventDate"
-                            required>
-
-                </div>
-
-
-                <div>
-
-                    <label>Venue</label>
-
-                    <input
-                            type="text"
-                            id="eventVenue"
-                            placeholder="Enter venue"
-                            required>
-
-                </div>
-
-
-                <div>
-
-                    <label>Capacity</label>
-
-                    <input
-                            type="number"
-                            id="eventCapacity"
-                            placeholder="Enter capacity"
-                            min="1"
-                            required>
-
-                </div>
+                <p id="organizerWelcome">
+                    Welcome Organizer
+                </p>
 
             </div>
 
-
             <button
-                    type="submit"
-                    class="primary-button">
-
-                Create Event
-
+                    class="danger-btn"
+                    onclick="organizerLogout()">
+                Logout
             </button>
 
-        </form>
-
-        <p id="createEventMessage"
-           class="message">
-        </p>
-
-    </div>
-
-
-    <!-- MY EVENTS -->
-
-    <div class="dashboard-card">
-
-        <h3>My Events</h3>
-
-        <div id="organizerEventsContainer">
-
-            <p>
-                Loading events...
-            </p>
-
         </div>
 
-    </div>
 
+        <!-- CREATE EVENT -->
 
-    <!-- EVENT REGISTRATIONS -->
+        <div class="dashboard-card">
 
-    <div class="dashboard-card">
-
-        <h3>Event Registrations</h3>
-
-        <div id="eventRegistrationsContainer">
-
-            <p>
-                Select an event to view registrations.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     EDIT EVENT MODAL
-===================================================== -->
-
-<section id="editEventSection"
-         class="page-section">
-
-    <div class="form-container">
-
-        <h2>Edit Event</h2>
-
-        <form id="editEventForm">
-
-            <input
-                    type="hidden"
-                    id="editEventId">
-
-
-            <label>Event Title</label>
+            <h3>Create Event</h3>
 
             <input
                     type="text"
-                    id="editEventTitle"
-                    required>
-
-
-            <label>Date</label>
+                    id="eventTitle"
+                    placeholder="Event Title"
+            >
 
             <input
                     type="date"
-                    id="editEventDate"
-                    required>
-
-
-            <label>Venue</label>
+                    id="eventDate"
+            >
 
             <input
                     type="text"
-                    id="editEventVenue"
-                    required>
-
-
-            <label>Capacity</label>
+                    id="eventVenue"
+                    placeholder="Venue"
+            >
 
             <input
                     type="number"
-                    id="editEventCapacity"
+                    id="eventCapacity"
+                    placeholder="Capacity"
                     min="1"
-                    required>
-
-
-            <button
-                    type="submit"
-                    class="primary-button">
-
-                Update Event
-
-            </button>
-
+            >
 
             <button
-                    type="button"
-                    class="secondary-button"
-                    onclick="showSection('organizerDashboardSection')">
-
-                Cancel
-
+                    class="primary-btn"
+                    onclick="createEvent()">
+                Create Event
             </button>
 
-        </form>
+        </div>
 
-        <p id="editEventMessage"
-           class="message">
-        </p>
+
+        <!-- MY EVENTS -->
+
+        <div class="dashboard-card">
+
+            <h3>My Events</h3>
+
+            <button
+                    class="primary-btn"
+                    onclick="loadOrganizerEvents()">
+                Refresh My Events
+            </button>
+
+            <div
+                    id="organizerEventsContainer"
+                    class="cards-container">
+            </div>
+
+        </div>
+
+
+        <!-- EVENT REGISTRATIONS -->
+
+        <div class="dashboard-card">
+
+            <h3>Event Registrations</h3>
+
+            <div id="eventRegistrationsContainer">
+
+                <p>
+                    Select an event to view registrations.
+                </p>
+
+            </div>
+
+        </div>
 
     </div>
 
 </section>
 
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
+<!-- ================= FOOTER ================= -->
 
 <footer>
 
@@ -696,17 +514,7 @@
 </footer>
 
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-
 <script src="app.js"></script>
-
-</body>
-
-</html></title>
-</head>
-<body>
 
 </body>
 </html>

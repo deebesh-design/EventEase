@@ -1,14 +1,8 @@
 // =====================================================
-// EVENTEASE APP.JS
+// EVENTEASE FRONTEND
 // =====================================================
 
-// Backend API base URL
 const API_BASE = "";
-
-
-// =====================================================
-// CURRENT USER
-// =====================================================
 
 let currentStudent = null;
 let currentOrganizer = null;
@@ -23,18 +17,21 @@ function showSection(sectionId) {
     const sections =
         document.querySelectorAll(".page-section");
 
-    sections.forEach(section => {
+    sections.forEach(function(section) {
+
         section.classList.remove("active-section");
+
     });
 
     const selectedSection =
         document.getElementById(sectionId);
 
     if (selectedSection) {
+
         selectedSection.classList.add("active-section");
+
     }
 
-    window.scrollTo(0, 0);
 }
 
 
@@ -42,148 +39,222 @@ function showSection(sectionId) {
 // STUDENT REGISTRATION
 // =====================================================
 
-document.getElementById("studentRegisterForm")
-    .addEventListener("submit", async function (event) {
+async function registerStudent() {
 
-        event.preventDefault();
+    const name =
+        document.getElementById("studentName").value.trim();
 
-        const name =
-            document.getElementById("studentName").value;
+    const email =
+        document.getElementById("studentEmail").value.trim();
 
-        const email =
-            document.getElementById("studentEmail").value;
+    const password =
+        document.getElementById("studentPassword").value.trim();
 
-        const password =
-            document.getElementById("studentPassword").value;
 
-        const message =
-            document.getElementById("studentRegisterMessage");
+    // Basic validation
 
-        try {
+    if (name === "") {
 
-            const response = await fetch(
-                API_BASE + "/students",
-                {
-                    method: "POST",
+        alert("Please enter student name");
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+        return;
+    }
 
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        password: password
-                    })
-                }
+    if (email === "") {
+
+        alert("Please enter student email");
+
+        return;
+    }
+
+    if (password === "") {
+
+        alert("Please enter student password");
+
+        return;
+    }
+
+
+    const studentData = {
+
+        name: name,
+
+        email: email,
+
+        password: password
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(API_BASE + "/students", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify(studentData)
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.error ||
+                "Student registration failed"
             );
 
-            const data = await response.json();
-
-            if (!response.ok) {
-
-                message.textContent =
-                    data.error || "Registration failed";
-
-                return;
-            }
-
-            message.textContent =
-                "Student account created successfully!";
-
-            document.getElementById(
-                "studentRegisterForm"
-            ).reset();
-
-            setTimeout(() => {
-
-                showSection("studentLoginSection");
-
-            }, 1000);
-
-        } catch (error) {
-
-            message.textContent =
-                "Unable to connect to server";
+            return;
         }
 
-    });
+
+        alert(
+            "Student registered successfully!"
+        );
+
+
+        document.getElementById(
+            "studentName"
+        ).value = "";
+
+        document.getElementById(
+            "studentEmail"
+        ).value = "";
+
+        document.getElementById(
+            "studentPassword"
+        ).value = "";
+
+
+        showSection("studentLogin");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
+    }
+
+}
 
 
 // =====================================================
 // STUDENT LOGIN
 // =====================================================
 
-document.getElementById("studentLoginForm")
-    .addEventListener("submit", async function (event) {
+async function studentLogin() {
 
-        event.preventDefault();
+    const email =
+        document
+            .getElementById("studentLoginEmail")
+            .value
+            .trim();
 
-        const email =
-            document.getElementById(
-                "studentLoginEmail"
-            ).value;
+    const password =
+        document
+            .getElementById("studentLoginPassword")
+            .value
+            .trim();
 
-        const password =
-            document.getElementById(
-                "studentLoginPassword"
-            ).value;
 
-        const message =
-            document.getElementById(
-                "studentLoginMessage"
+    if (email === "") {
+
+        alert("Please enter email");
+
+        return;
+    }
+
+
+    if (password === "") {
+
+        alert("Please enter password");
+
+        return;
+    }
+
+
+    try {
+
+        const url =
+            API_BASE +
+            "/students/login" +
+            "?email=" +
+            encodeURIComponent(email) +
+            "&password=" +
+            encodeURIComponent(password);
+
+
+        const response =
+            await fetch(url, {
+
+                method: "POST"
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.error ||
+                "Student login failed"
             );
 
-        try {
-
-            const response = await fetch(
-                API_BASE +
-                "/students/login?email=" +
-                encodeURIComponent(email) +
-                "&password=" +
-                encodeURIComponent(password),
-                {
-                    method: "POST"
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-
-                message.textContent =
-                    data.error || "Login failed";
-
-                return;
-            }
-
-            currentStudent = data;
-
-            document.getElementById(
-                "studentWelcome"
-            ).textContent =
-                "Welcome, " + currentStudent.name;
-
-            message.textContent =
-                "Login successful";
-
-            document.getElementById(
-                "studentLoginForm"
-            ).reset();
-
-            showSection("studentDashboardSection");
-
-            loadEvents();
-
-            loadStudentRegistrations();
-
-        } catch (error) {
-
-            message.textContent =
-                "Unable to connect to server";
+            return;
         }
 
-    });
+
+        currentStudent = data;
+
+
+        document.getElementById(
+            "studentWelcome"
+        ).innerText =
+            "Welcome, " + currentStudent.name;
+
+
+        alert("Student login successful!");
+
+
+        showSection("studentDashboard");
+
+
+        loadStudentEvents();
+
+        loadStudentRegistrations();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
+    }
+
+}
 
 
 // =====================================================
@@ -194,7 +265,10 @@ function studentLogout() {
 
     currentStudent = null;
 
-    showSection("homeSection");
+    alert("Student logged out");
+
+    showSection("home");
+
 }
 
 
@@ -204,13 +278,54 @@ function studentLogout() {
 
 async function loadEvents() {
 
-    const container =
-        document.getElementById(
-            "eventsContainer"
+    try {
+
+        const response =
+            await fetch(
+                API_BASE + "/events"
+            );
+
+
+        const events =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                events.error ||
+                "Unable to load events"
+            );
+
+            return;
+        }
+
+
+        displayEvents(
+            events,
+            "eventsContainer",
+            false
         );
 
-    container.innerHTML =
-        "<p>Loading events...</p>";
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// LOAD STUDENT EVENTS
+// =====================================================
+
+async function loadStudentEvents() {
 
     try {
 
@@ -219,186 +334,259 @@ async function loadEvents() {
                 API_BASE + "/events"
             );
 
+
         const events =
             await response.json();
 
+
         if (!response.ok) {
 
-            container.innerHTML =
-                "<p>Unable to load events.</p>";
+            alert(
+                events.error ||
+                "Unable to load events"
+            );
 
             return;
         }
 
-        if (events.length === 0) {
 
-            container.innerHTML =
-                "<p>No events available.</p>";
+        displayEvents(
+            events,
+            "studentEventsContainer",
+            true
+        );
 
-            return;
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// DISPLAY EVENTS
+// =====================================================
+
+async function displayEvents(
+    events,
+    containerId,
+    allowRegistration
+) {
+
+    const container =
+        document.getElementById(containerId);
+
+
+    if (!events || events.length === 0) {
+
+        container.innerHTML =
+            "<p>No events available.</p>";
+
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    for (const event of events) {
+
+        let registeredCount = 0;
+
+        let availableSeats = 0;
+
+
+        try {
+
+            const countResponse =
+                await fetch(
+                    API_BASE +
+                    "/events/" +
+                    event.id +
+                    "/registered-count"
+                );
+
+
+            registeredCount =
+                await countResponse.json();
+
+
+            const seatsResponse =
+                await fetch(
+                    API_BASE +
+                    "/events/" +
+                    event.id +
+                    "/available-seats"
+                );
+
+
+            availableSeats =
+                await seatsResponse.json();
+
+
+        } catch (error) {
+
+            console.error(error);
+
         }
 
-        container.innerHTML = "";
 
-        for (const event of events) {
+        const card =
+            document.createElement("div");
 
-            const registeredCount =
-                await getRegisteredCount(event.id);
 
-            const availableSeats =
-                event.capacity -
-                registeredCount;
+        card.className =
+            "event-card";
 
-            let statusText;
 
-            if (availableSeats <= 0) {
+        let statusHTML;
 
-                statusText =
-                    '<span class="status-full">FULL</span>';
+
+        if (availableSeats > 0) {
+
+            statusHTML =
+                `<p class="status-available">
+                    Available
+                </p>`;
+
+        } else {
+
+            statusHTML =
+                `<p class="status-full">
+                    FULL
+                </p>`;
+
+        }
+
+
+        let buttonHTML = "";
+
+
+        if (allowRegistration) {
+
+            if (availableSeats > 0) {
+
+                buttonHTML =
+                    `
+                    <button
+                        class="primary-btn"
+                        onclick="registerForEvent(${event.id})">
+
+                        Register for Event
+
+                    </button>
+                    `;
 
             } else {
 
-                statusText =
-                    '<span class="status-available">AVAILABLE</span>';
+                buttonHTML =
+                    `
+                    <button
+                        class="danger-btn"
+                        disabled>
+
+                        Event Full
+
+                    </button>
+                    `;
+
             }
 
-            const card =
-                document.createElement("div");
-
-            card.className = "event-card";
-
-            card.innerHTML = `
-
-                <h4>${event.title}</h4>
-
-                <p>
-                    <strong>Date:</strong>
-                    ${event.date}
-                </p>
-
-                <p>
-                    <strong>Venue:</strong>
-                    ${event.venue}
-                </p>
-
-                <p>
-                    <strong>Capacity:</strong>
-                    ${event.capacity}
-                </p>
-
-                <p>
-                    <strong>Registered:</strong>
-                    ${registeredCount}
-                </p>
-
-                <p>
-                    <strong>Available Seats:</strong>
-                    ${Math.max(availableSeats, 0)}
-                </p>
-
-                <p>
-                    <strong>Status:</strong>
-                    ${statusText}
-                </p>
-
-                <div class="event-actions">
-
-                    ${
-                availableSeats > 0
-                    ?
-                    `
-                        <button
-                            class="register-button"
-                            onclick="registerForEvent(${event.id})">
-
-                            Register
-
-                        </button>
-                        `
-                    :
-                    `
-                        <button
-                            class="cancel-button"
-                            disabled>
-
-                            Event Full
-
-                        </button>
-                        `
-            }
-
-                </div>
-            `;
-
-            container.appendChild(card);
         }
 
-    } catch (error) {
 
-        container.innerHTML =
-            "<p>Unable to connect to server.</p>";
+        card.innerHTML = `
+
+            <h3>
+                ${event.title}
+            </h3>
+
+            <p>
+                <strong>Date:</strong>
+                ${event.date}
+            </p>
+
+            <p>
+                <strong>Venue:</strong>
+                ${event.venue}
+            </p>
+
+            <p>
+                <strong>Capacity:</strong>
+                ${event.capacity}
+            </p>
+
+            <p>
+                <strong>Registered:</strong>
+                ${registeredCount}
+            </p>
+
+            <p>
+                <strong>Available Seats:</strong>
+                ${availableSeats}
+            </p>
+
+            ${statusHTML}
+
+            ${buttonHTML}
+
+        `;
+
+
+        container.appendChild(card);
+
     }
+
 }
 
 
 // =====================================================
-// GET REGISTERED COUNT
-// =====================================================
-
-async function getRegisteredCount(eventId) {
-
-    try {
-
-        const response =
-            await fetch(
-                API_BASE +
-                "/events/" +
-                eventId +
-                "/registered-count"
-            );
-
-        if (!response.ok) {
-            return 0;
-        }
-
-        return await response.json();
-
-    } catch (error) {
-
-        return 0;
-    }
-}
-
-
-// =====================================================
-// STUDENT REGISTER FOR EVENT
+// REGISTER STUDENT FOR EVENT
 // =====================================================
 
 async function registerForEvent(eventId) {
 
     if (!currentStudent) {
 
-        alert("Please login as a student first.");
+        alert(
+            "Please login as a student first"
+        );
+
+        showSection("studentLogin");
 
         return;
     }
 
+
     try {
 
+        const url =
+            API_BASE +
+            "/registrations" +
+            "?studentId=" +
+            currentStudent.id +
+            "&eventId=" +
+            eventId;
+
+
         const response =
-            await fetch(
-                API_BASE +
-                "/registrations?studentId=" +
-                currentStudent.id +
-                "&eventId=" +
-                eventId,
-                {
-                    method: "POST"
-                }
-            );
+            await fetch(url, {
+
+                method: "POST"
+
+            });
+
 
         const data =
             await response.json();
+
 
         if (!response.ok) {
 
@@ -410,20 +598,27 @@ async function registerForEvent(eventId) {
             return;
         }
 
+
         alert(
             "Successfully registered for the event!"
         );
 
-        loadEvents();
+
+        loadStudentEvents();
 
         loadStudentRegistrations();
 
+
     } catch (error) {
 
+        console.error(error);
+
         alert(
-            "Unable to connect to server"
+            "Unable to connect to the server"
         );
+
     }
+
 }
 
 
@@ -433,108 +628,151 @@ async function registerForEvent(eventId) {
 
 async function loadStudentRegistrations() {
 
-    const container =
-        document.getElementById(
-            "studentRegistrationsContainer"
-        );
-
     if (!currentStudent) {
-
-        container.innerHTML =
-            "<p>Please login first.</p>";
 
         return;
     }
+
 
     try {
 
         const response =
             await fetch(
-                API_BASE + "/registrations"
+                API_BASE +
+                "/registrations"
             );
+
 
         const registrations =
             await response.json();
 
+
         if (!response.ok) {
 
-            container.innerHTML =
-                "<p>Unable to load registrations.</p>";
+            alert(
+                registrations.error ||
+                "Unable to load registrations"
+            );
 
             return;
         }
 
+
         const myRegistrations =
             registrations.filter(
-                registration =>
-                    registration.student &&
-                    registration.student.id ===
-                    currentStudent.id
+                function(registration) {
+
+                    return registration.student.id
+                        === currentStudent.id;
+
+                }
             );
+
+
+        const container =
+            document.getElementById(
+                "studentRegistrationsContainer"
+            );
+
 
         if (myRegistrations.length === 0) {
 
             container.innerHTML =
-                "<p>You have not registered for any event.</p>";
+                "<p>You have no registrations.</p>";
 
             return;
         }
 
-        container.innerHTML = "";
 
-        for (const registration of myRegistrations) {
+        let html = `
 
-            const event =
-                registration.event;
+            <table>
 
-            const card =
-                document.createElement("div");
+                <tr>
 
-            card.className = "event-card";
+                    <th>
+                        Event
+                    </th>
 
-            card.innerHTML = `
+                    <th>
+                        Date
+                    </th>
 
-                <h4>${event.title}</h4>
+                    <th>
+                        Venue
+                    </th>
 
-                <p>
-                    <strong>Date:</strong>
-                    ${event.date}
-                </p>
+                    <th>
+                        Action
+                    </th>
 
-                <p>
-                    <strong>Venue:</strong>
-                    ${event.venue}
-                </p>
+                </tr>
 
-                <div class="event-actions">
+        `;
 
-                    <button
-                        class="cancel-button"
-                        onclick="cancelRegistration(
-                            ${registration.id}
-                        )">
 
-                        Cancel Registration
+        myRegistrations.forEach(
+            function(registration) {
 
-                    </button>
+                html += `
 
-                </div>
+                    <tr>
 
-            `;
+                        <td>
+                            ${registration.event.title}
+                        </td>
 
-            container.appendChild(card);
-        }
+                        <td>
+                            ${registration.event.date}
+                        </td>
+
+                        <td>
+                            ${registration.event.venue}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="danger-btn"
+                                onclick="cancelRegistration(
+                                    ${registration.id}
+                                )">
+
+                                Cancel
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+        html += "</table>";
+
+
+        container.innerHTML = html;
+
 
     } catch (error) {
 
-        container.innerHTML =
-            "<p>Unable to connect to server.</p>";
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
     }
+
 }
 
 
 // =====================================================
-// CANCEL STUDENT REGISTRATION
+// CANCEL REGISTRATION
 // =====================================================
 
 async function cancelRegistration(
@@ -546,9 +784,12 @@ async function cancelRegistration(
             "Are you sure you want to cancel this registration?"
         );
 
+
     if (!confirmCancel) {
+
         return;
     }
+
 
     try {
 
@@ -558,37 +799,53 @@ async function cancelRegistration(
                 "/registrations/" +
                 registrationId,
                 {
+
                     method: "DELETE"
+
                 }
             );
 
+
         const data =
-            await response.json();
+            await response.json().catch(
+                function() {
+                    return null;
+                }
+            );
+
 
         if (!response.ok) {
 
             alert(
-                data.error ||
-                "Unable to cancel registration"
+                data && data.error
+                    ? data.error
+                    : "Cancellation failed"
             );
 
             return;
         }
 
+
         alert(
             "Registration cancelled successfully"
         );
 
+
         loadStudentRegistrations();
 
-        loadEvents();
+        loadStudentEvents();
+
 
     } catch (error) {
 
+        console.error(error);
+
         alert(
-            "Unable to connect to server"
+            "Unable to connect to the server"
         );
+
     }
+
 }
 
 
@@ -596,166 +853,237 @@ async function cancelRegistration(
 // ORGANIZER REGISTRATION
 // =====================================================
 
-document.getElementById("organizerRegisterForm")
-    .addEventListener("submit", async function (event) {
+async function registerOrganizer() {
 
-        event.preventDefault();
+    const name =
+        document
+            .getElementById("organizerName")
+            .value
+            .trim();
 
-        const name =
-            document.getElementById(
-                "organizerName"
-            ).value;
+    const email =
+        document
+            .getElementById("organizerEmail")
+            .value
+            .trim();
 
-        const email =
-            document.getElementById(
-                "organizerEmail"
-            ).value;
+    const password =
+        document
+            .getElementById("organizerPassword")
+            .value
+            .trim();
 
-        const password =
-            document.getElementById(
-                "organizerPassword"
-            ).value;
 
-        const message =
-            document.getElementById(
-                "organizerRegisterMessage"
+    if (name === "") {
+
+        alert("Please enter organizer name");
+
+        return;
+    }
+
+
+    if (email === "") {
+
+        alert("Please enter organizer email");
+
+        return;
+    }
+
+
+    if (password === "") {
+
+        alert("Please enter organizer password");
+
+        return;
+    }
+
+
+    const organizerData = {
+
+        name: name,
+
+        email: email,
+
+        password: password
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE + "/organizers",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            organizerData
+                        )
+
+                }
             );
 
-        try {
 
-            const response =
-                await fetch(
-                    API_BASE + "/organizers",
-                    {
-                        method: "POST",
+        const data =
+            await response.json();
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
 
-                        body: JSON.stringify({
-                            name: name,
-                            email: email,
-                            password: password
-                        })
-                    }
-                );
+        if (!response.ok) {
 
-            const data =
-                await response.json();
+            alert(
+                data.error ||
+                "Organizer registration failed"
+            );
 
-            if (!response.ok) {
-
-                message.textContent =
-                    data.error ||
-                    "Registration failed";
-
-                return;
-            }
-
-            message.textContent =
-                "Organizer account created successfully!";
-
-            document.getElementById(
-                "organizerRegisterForm"
-            ).reset();
-
-            setTimeout(() => {
-
-                showSection(
-                    "organizerLoginSection"
-                );
-
-            }, 1000);
-
-        } catch (error) {
-
-            message.textContent =
-                "Unable to connect to server";
+            return;
         }
 
-    });
+
+        alert(
+            "Organizer registered successfully!"
+        );
+
+
+        document.getElementById(
+            "organizerName"
+        ).value = "";
+
+        document.getElementById(
+            "organizerEmail"
+        ).value = "";
+
+        document.getElementById(
+            "organizerPassword"
+        ).value = "";
+
+
+        showSection("organizerLogin");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
+    }
+
+}
 
 
 // =====================================================
 // ORGANIZER LOGIN
 // =====================================================
 
-document.getElementById("organizerLoginForm")
-    .addEventListener("submit", async function (event) {
+async function organizerLogin() {
 
-        event.preventDefault();
+    const email =
+        document
+            .getElementById("organizerLoginEmail")
+            .value
+            .trim();
 
-        const email =
-            document.getElementById(
-                "organizerLoginEmail"
-            ).value;
+    const password =
+        document
+            .getElementById("organizerLoginPassword")
+            .value
+            .trim();
 
-        const password =
-            document.getElementById(
-                "organizerLoginPassword"
-            ).value;
 
-        const message =
-            document.getElementById(
-                "organizerLoginMessage"
+    if (email === "") {
+
+        alert("Please enter email");
+
+        return;
+    }
+
+
+    if (password === "") {
+
+        alert("Please enter password");
+
+        return;
+    }
+
+
+    try {
+
+        const url =
+            API_BASE +
+            "/organizers/login" +
+            "?email=" +
+            encodeURIComponent(email) +
+            "&password=" +
+            encodeURIComponent(password);
+
+
+        const response =
+            await fetch(url, {
+
+                method: "POST"
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.error ||
+                "Organizer login failed"
             );
 
-        try {
-
-            const response =
-                await fetch(
-                    API_BASE +
-                    "/organizers/login?email=" +
-                    encodeURIComponent(email) +
-                    "&password=" +
-                    encodeURIComponent(password),
-                    {
-                        method: "POST"
-                    }
-                );
-
-            const data =
-                await response.json();
-
-            if (!response.ok) {
-
-                message.textContent =
-                    data.error ||
-                    "Login failed";
-
-                return;
-            }
-
-            currentOrganizer = data;
-
-            document.getElementById(
-                "organizerWelcome"
-            ).textContent =
-                "Welcome, " +
-                currentOrganizer.name;
-
-            message.textContent =
-                "Login successful";
-
-            document.getElementById(
-                "organizerLoginForm"
-            ).reset();
-
-            showSection(
-                "organizerDashboardSection"
-            );
-
-            loadOrganizerEvents();
-
-        } catch (error) {
-
-            message.textContent =
-                "Unable to connect to server";
+            return;
         }
 
-    });
+
+        currentOrganizer = data;
+
+
+        document.getElementById(
+            "organizerWelcome"
+        ).innerText =
+            "Welcome, " +
+            currentOrganizer.name;
+
+
+        alert(
+            "Organizer login successful!"
+        );
+
+
+        showSection("organizerDashboard");
+
+
+        loadOrganizerEvents();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
+    }
+
+}
 
 
 // =====================================================
@@ -766,7 +1094,10 @@ function organizerLogout() {
 
     currentOrganizer = null;
 
-    showSection("homeSection");
+    alert("Organizer logged out");
+
+    showSection("home");
+
 }
 
 
@@ -774,103 +1105,171 @@ function organizerLogout() {
 // CREATE EVENT
 // =====================================================
 
-document.getElementById("createEventForm")
-    .addEventListener("submit", async function (event) {
+async function createEvent() {
 
-        event.preventDefault();
+    if (!currentOrganizer) {
 
-        if (!currentOrganizer) {
+        alert(
+            "Please login as an organizer first"
+        );
+
+        showSection("organizerLogin");
+
+        return;
+    }
+
+
+    const title =
+        document
+            .getElementById("eventTitle")
+            .value
+            .trim();
+
+    const date =
+        document
+            .getElementById("eventDate")
+            .value;
+
+    const venue =
+        document
+            .getElementById("eventVenue")
+            .value
+            .trim();
+
+    const capacity =
+        Number(
+            document
+                .getElementById("eventCapacity")
+                .value
+        );
+
+
+    if (title === "") {
+
+        alert("Please enter event title");
+
+        return;
+    }
+
+
+    if (date === "") {
+
+        alert("Please select event date");
+
+        return;
+    }
+
+
+    if (venue === "") {
+
+        alert("Please enter venue");
+
+        return;
+    }
+
+
+    if (capacity <= 0) {
+
+        alert(
+            "Capacity must be greater than 0"
+        );
+
+        return;
+    }
+
+
+    const eventData = {
+
+        title: title,
+
+        date: date,
+
+        venue: venue,
+
+        capacity: capacity
+
+    };
+
+
+    try {
+
+        const url =
+            API_BASE +
+            "/events?organizerId=" +
+            currentOrganizer.id;
+
+
+        const response =
+            await fetch(url, {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify(eventData)
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
 
             alert(
-                "Please login as an organizer first."
+                data.error ||
+                "Event creation failed"
             );
 
             return;
         }
 
-        const title =
-            document.getElementById(
-                "eventTitle"
-            ).value;
 
-        const date =
-            document.getElementById(
-                "eventDate"
-            ).value;
+        alert(
+            "Event created successfully!"
+        );
 
-        const venue =
-            document.getElementById(
-                "eventVenue"
-            ).value;
 
-        const capacity =
-            document.getElementById(
-                "eventCapacity"
-            ).value;
+        document.getElementById(
+            "eventTitle"
+        ).value = "";
 
-        const message =
-            document.getElementById(
-                "createEventMessage"
-            );
+        document.getElementById(
+            "eventDate"
+        ).value = "";
 
-        try {
+        document.getElementById(
+            "eventVenue"
+        ).value = "";
 
-            const response =
-                await fetch(
-                    API_BASE +
-                    "/events?organizerId=" +
-                    currentOrganizer.id,
-                    {
-                        method: "POST",
+        document.getElementById(
+            "eventCapacity"
+        ).value = "";
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
 
-                        body: JSON.stringify({
+        loadOrganizerEvents();
 
-                            title: title,
+        loadEvents();
 
-                            date: date,
 
-                            venue: venue,
+    } catch (error) {
 
-                            capacity:
-                                Number(capacity)
+        console.error(error);
 
-                        })
-                    }
-                );
+        alert(
+            "Unable to connect to the server"
+        );
 
-            const data =
-                await response.json();
+    }
 
-            if (!response.ok) {
-
-                message.textContent =
-                    data.error ||
-                    "Unable to create event";
-
-                return;
-            }
-
-            message.textContent =
-                "Event created successfully!";
-
-            document.getElementById(
-                "createEventForm"
-            ).reset();
-
-            loadOrganizerEvents();
-
-        } catch (error) {
-
-            message.textContent =
-                "Unable to connect to server";
-        }
-
-    });
+}
 
 
 // =====================================================
@@ -879,21 +1278,11 @@ document.getElementById("createEventForm")
 
 async function loadOrganizerEvents() {
 
-    const container =
-        document.getElementById(
-            "organizerEventsContainer"
-        );
-
     if (!currentOrganizer) {
-
-        container.innerHTML =
-            "<p>Please login first.</p>";
 
         return;
     }
 
-    container.innerHTML =
-        "<p>Loading events...</p>";
 
     try {
 
@@ -904,16 +1293,27 @@ async function loadOrganizerEvents() {
                 currentOrganizer.id
             );
 
+
         const events =
             await response.json();
 
+
         if (!response.ok) {
 
-            container.innerHTML =
-                "<p>Unable to load events.</p>";
+            alert(
+                events.error ||
+                "Unable to load organizer events"
+            );
 
             return;
         }
+
+
+        const container =
+            document.getElementById(
+                "organizerEventsContainer"
+            );
+
 
         if (events.length === 0) {
 
@@ -923,26 +1323,65 @@ async function loadOrganizerEvents() {
             return;
         }
 
+
         container.innerHTML = "";
+
 
         for (const event of events) {
 
-            const registeredCount =
-                await getRegisteredCount(event.id);
+            let registeredCount = 0;
 
-            const availableSeats =
-                event.capacity -
-                registeredCount;
+            let availableSeats = 0;
+
+
+            try {
+
+                const countResponse =
+                    await fetch(
+                        API_BASE +
+                        "/events/" +
+                        event.id +
+                        "/registered-count"
+                    );
+
+
+                registeredCount =
+                    await countResponse.json();
+
+
+                const seatsResponse =
+                    await fetch(
+                        API_BASE +
+                        "/events/" +
+                        event.id +
+                        "/available-seats"
+                    );
+
+
+                availableSeats =
+                    await seatsResponse.json();
+
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
 
             const card =
                 document.createElement("div");
 
+
             card.className =
                 "event-card";
 
+
             card.innerHTML = `
 
-                <h4>${event.title}</h4>
+                <h3>
+                    ${event.title}
+                </h3>
 
                 <p>
                     <strong>Date:</strong>
@@ -965,233 +1404,190 @@ async function loadOrganizerEvents() {
                 </p>
 
                 <p>
-                    <strong>Available Seats:</strong>
-                    ${Math.max(
-                availableSeats,
-                0
-            )}
+                    <strong>Available:</strong>
+                    ${availableSeats}
                 </p>
 
-                <div class="event-actions">
+                <button
+                    class="primary-btn"
+                    onclick="editEvent(${event.id})">
 
-                    <button
-                        class="edit-button"
-                        onclick="openEditEvent(
-                            ${event.id}
-                        )">
+                    Edit
 
-                        Edit
+                </button>
 
-                    </button>
+                <button
+                    class="danger-btn"
+                    onclick="deleteEvent(${event.id})">
 
-                    <button
-                        class="delete-button"
-                        onclick="deleteEvent(
-                            ${event.id}
-                        )">
+                    Delete
 
-                        Delete
+                </button>
 
-                    </button>
+                <button
+                    class="secondary-btn"
+                    onclick="viewEventRegistrations(${event.id})">
 
-                    <button
-                        class="view-button"
-                        onclick="viewEventRegistrations(
-                            ${event.id}
-                        )">
+                    View Registrations
 
-                        View Registrations
-
-                    </button>
-
-                </div>
+                </button>
 
             `;
 
+
             container.appendChild(card);
+
         }
+
 
     } catch (error) {
 
-        container.innerHTML =
-            "<p>Unable to connect to server.</p>";
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
     }
+
 }
 
 
 // =====================================================
-// OPEN EDIT EVENT
+// EDIT EVENT
 // =====================================================
 
-async function openEditEvent(eventId) {
+async function editEvent(eventId) {
+
+    if (!currentOrganizer) {
+
+        return;
+    }
+
+
+    const title =
+        prompt(
+            "Enter new event title:"
+        );
+
+
+    if (title === null) {
+
+        return;
+    }
+
+
+    const date =
+        prompt(
+            "Enter new event date (YYYY-MM-DD):"
+        );
+
+
+    if (date === null) {
+
+        return;
+    }
+
+
+    const venue =
+        prompt(
+            "Enter new venue:"
+        );
+
+
+    if (venue === null) {
+
+        return;
+    }
+
+
+    const capacity =
+        prompt(
+            "Enter new capacity:"
+        );
+
+
+    if (capacity === null) {
+
+        return;
+    }
+
+
+    const eventData = {
+
+        title: title,
+
+        date: date,
+
+        venue: venue,
+
+        capacity: Number(capacity)
+
+    };
+
 
     try {
 
-        const response =
-            await fetch(
-                API_BASE +
-                "/events/" +
-                eventId
-            );
+        const url =
+            API_BASE +
+            "/events/" +
+            eventId +
+            "?organizerId=" +
+            currentOrganizer.id;
 
-        const event =
+
+        const response =
+            await fetch(url, {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify(eventData)
+
+            });
+
+
+        const data =
             await response.json();
+
 
         if (!response.ok) {
 
             alert(
-                event.error ||
-                "Unable to load event"
+                data.error ||
+                "Event update failed"
             );
 
             return;
         }
 
-        document.getElementById(
-            "editEventId"
-        ).value = event.id;
 
-        document.getElementById(
-            "editEventTitle"
-        ).value = event.title;
-
-        document.getElementById(
-            "editEventDate"
-        ).value = event.date;
-
-        document.getElementById(
-            "editEventVenue"
-        ).value = event.venue;
-
-        document.getElementById(
-            "editEventCapacity"
-        ).value = event.capacity;
-
-        showSection(
-            "editEventSection"
+        alert(
+            "Event updated successfully!"
         );
+
+
+        loadOrganizerEvents();
+
 
     } catch (error) {
 
+        console.error(error);
+
         alert(
-            "Unable to connect to server"
+            "Unable to connect to the server"
         );
+
     }
+
 }
-
-
-// =====================================================
-// UPDATE EVENT
-// =====================================================
-
-document.getElementById("editEventForm")
-    .addEventListener("submit", async function (event) {
-
-        event.preventDefault();
-
-        if (!currentOrganizer) {
-
-            alert(
-                "Please login as organizer."
-            );
-
-            return;
-        }
-
-        const eventId =
-            document.getElementById(
-                "editEventId"
-            ).value;
-
-        const title =
-            document.getElementById(
-                "editEventTitle"
-            ).value;
-
-        const date =
-            document.getElementById(
-                "editEventDate"
-            ).value;
-
-        const venue =
-            document.getElementById(
-                "editEventVenue"
-            ).value;
-
-        const capacity =
-            document.getElementById(
-                "editEventCapacity"
-            ).value;
-
-        const message =
-            document.getElementById(
-                "editEventMessage"
-            );
-
-        try {
-
-            const response =
-                await fetch(
-                    API_BASE +
-                    "/events/" +
-                    eventId +
-                    "?organizerId=" +
-                    currentOrganizer.id,
-                    {
-                        method: "PUT",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-
-                            title: title,
-
-                            date: date,
-
-                            venue: venue,
-
-                            capacity:
-                                Number(capacity)
-
-                        })
-                    }
-                );
-
-            const data =
-                await response.json();
-
-            if (!response.ok) {
-
-                message.textContent =
-                    data.error ||
-                    "Unable to update event";
-
-                return;
-            }
-
-            message.textContent =
-                "Event updated successfully!";
-
-            setTimeout(() => {
-
-                showSection(
-                    "organizerDashboardSection"
-                );
-
-                loadOrganizerEvents();
-
-            }, 800);
-
-        } catch (error) {
-
-            message.textContent =
-                "Unable to connect to server";
-        }
-
-    });
 
 
 // =====================================================
@@ -1202,61 +1598,90 @@ async function deleteEvent(eventId) {
 
     if (!currentOrganizer) {
 
-        alert(
-            "Please login as organizer."
-        );
-
         return;
     }
 
-    const confirmDelete =
+
+    const confirmation =
         confirm(
             "Are you sure you want to delete this event?"
         );
 
-    if (!confirmDelete) {
+
+    if (!confirmation) {
+
         return;
     }
 
+
     try {
 
+        const url =
+            API_BASE +
+            "/events/" +
+            eventId +
+            "?organizerId=" +
+            currentOrganizer.id;
+
+
         const response =
-            await fetch(
-                API_BASE +
-                "/events/" +
-                eventId +
-                "?organizerId=" +
-                currentOrganizer.id,
-                {
-                    method: "DELETE"
-                }
-            );
+            await fetch(url, {
+
+                method: "DELETE"
+
+            });
+
 
         const data =
-            await response.json();
+            await response.text();
+
 
         if (!response.ok) {
 
-            alert(
-                data.error ||
-                "Unable to delete event"
-            );
+            let errorMessage =
+                "Unable to delete event";
+
+
+            try {
+
+                const errorData =
+                    JSON.parse(data);
+
+                errorMessage =
+                    errorData.error ||
+                    errorMessage;
+
+            } catch (error) {
+
+                // Ignore JSON parsing error
+
+            }
+
+
+            alert(errorMessage);
 
             return;
         }
 
+
         alert(
-            "Event deleted successfully"
+            "Event deleted successfully!"
         );
+
 
         loadOrganizerEvents();
 
+
     } catch (error) {
 
+        console.error(error);
+
         alert(
-            "Unable to connect to server"
+            "Unable to connect to the server"
         );
+
     }
+
 }
 
 
@@ -1268,14 +1693,6 @@ async function viewEventRegistrations(
     eventId
 ) {
 
-    const container =
-        document.getElementById(
-            "eventRegistrationsContainer"
-        );
-
-    container.innerHTML =
-        "<p>Loading registrations...</p>";
-
     try {
 
         const response =
@@ -1285,16 +1702,27 @@ async function viewEventRegistrations(
                 eventId
             );
 
+
         const registrations =
             await response.json();
 
+
         if (!response.ok) {
 
-            container.innerHTML =
-                "<p>Unable to load registrations.</p>";
+            alert(
+                registrations.error ||
+                "Unable to load registrations"
+            );
 
             return;
         }
+
+
+        const container =
+            document.getElementById(
+                "eventRegistrationsContainer"
+            );
+
 
         if (registrations.length === 0) {
 
@@ -1304,30 +1732,32 @@ async function viewEventRegistrations(
             return;
         }
 
+
         let html = `
 
             <table>
 
-                <thead>
+                <tr>
 
-                    <tr>
+                    <th>
+                        Registration ID
+                    </th>
 
-                        <th>Registration ID</th>
+                    <th>
+                        Student Name
+                    </th>
 
-                        <th>Student Name</th>
+                    <th>
+                        Student Email
+                    </th>
 
-                        <th>Email</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
+                </tr>
 
         `;
 
+
         registrations.forEach(
-            registration => {
+            function(registration) {
 
                 html += `
 
@@ -1348,22 +1778,32 @@ async function viewEventRegistrations(
                     </tr>
 
                 `;
+
             }
         );
 
-        html += `
 
-                </tbody>
+        html += "</table>";
 
-            </table>
-
-        `;
 
         container.innerHTML = html;
 
+
     } catch (error) {
 
-        container.innerHTML =
-            "<p>Unable to connect to server.</p>";
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server"
+        );
+
     }
+
 }
+
+
+// =====================================================
+// START PAGE
+// =====================================================
+
+showSection("home");

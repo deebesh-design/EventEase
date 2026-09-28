@@ -1,9 +1,9 @@
 package com.eventease.EventEase.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "student")
 public class Student {
 
     @Id
@@ -11,9 +11,9 @@ public class Student {
     private Long id;
 
     private String name;
+
     private String email;
 
-    @JsonIgnore
     private String password;
 
     public Student() {
