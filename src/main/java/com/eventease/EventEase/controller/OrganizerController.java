@@ -51,4 +51,13 @@ public class OrganizerController {
 
         return "Organizer deleted successfully";
     }
+
+    // LOGIN
+    @PostMapping("/login")
+    public Organizer login(
+            @RequestParam String email,
+            @RequestParam String password) {
+
+        return service.login(email, password);
+    }
 }

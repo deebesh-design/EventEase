@@ -16,38 +16,118 @@ public class EventController {
         this.service = service;
     }
 
-    // CREATE
+    // =====================================================
+    // CREATE EVENT
+    // =====================================================
+
     @PostMapping
-    public Event addEvent(@RequestBody Event event) {
-        return service.addEvent(event);
+    public Event addEvent(
+            @RequestParam Long organizerId,
+            @RequestBody Event event) {
+
+        return service.addEvent(
+                organizerId,
+                event
+        );
     }
 
-    // READ ALL
+    // =====================================================
+    // GET ALL EVENTS
+    // =====================================================
+
     @GetMapping
     public List<Event> getAllEvents() {
+
         return service.getAllEvents();
     }
 
-    // READ ONE
+    // =====================================================
+    // GET ONE EVENT
+    // =====================================================
+
     @GetMapping("/{id}")
-    public Event getEventById(@PathVariable Long id) {
+    public Event getEventById(
+            @PathVariable Long id) {
+
         return service.getEventById(id);
     }
 
-    // UPDATE
+    // =====================================================
+    // GET ORGANIZER EVENTS
+    // =====================================================
+
+    @GetMapping("/organizer/{organizerId}")
+    public List<Event> getEventsByOrganizer(
+            @PathVariable Long organizerId) {
+
+        return service.getEventsByOrganizer(
+                organizerId
+        );
+    }
+
+    // =====================================================
+    // GET REGISTERED COUNT
+    // =====================================================
+
+    @GetMapping("/{id}/registered-count")
+    public long getRegisteredCount(
+            @PathVariable Long id) {
+
+        return service.getRegisteredCount(id);
+    }
+
+    // =====================================================
+    // GET AVAILABLE SEATS
+    // =====================================================
+
+    @GetMapping("/{id}/available-seats")
+    public long getAvailableSeats(
+            @PathVariable Long id) {
+
+        return service.getAvailableSeats(id);
+    }
+
+    // =====================================================
+    // GET EVENT STATUS
+    // =====================================================
+
+    @GetMapping("/{id}/status")
+    public String getEventStatus(
+            @PathVariable Long id) {
+
+        return service.getEventStatus(id);
+    }
+
+    // =====================================================
+    // UPDATE EVENT
+    // =====================================================
+
     @PutMapping("/{id}")
     public Event updateEvent(
             @PathVariable Long id,
+            @RequestParam Long organizerId,
             @RequestBody Event event) {
 
-        return service.updateEvent(id, event);
+        return service.updateEvent(
+                id,
+                organizerId,
+                event
+        );
     }
 
-    // DELETE
-    @DeleteMapping("/{id}")
-    public String deleteEvent(@PathVariable Long id) {
+    // =====================================================
+    // DELETE EVENT
+    // =====================================================
 
-        service.deleteEvent(id);
+    @DeleteMapping("/{id}")
+    public String deleteEvent(
+            @PathVariable Long id,
+            @RequestParam Long organizerId) {
+
+        service.deleteEvent(
+                id,
+                organizerId
+        );
 
         return "Event deleted successfully";
     }

@@ -51,4 +51,13 @@ public class StudentController {
 
         return "Student deleted successfully";
     }
+
+    // LOGIN
+    @PostMapping("/login")
+    public Student login(
+            @RequestParam String email,
+            @RequestParam String password) {
+
+        return service.login(email, password);
+    }
 }

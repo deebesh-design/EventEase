@@ -9,4 +9,6 @@ public interface RegistrationRepository
         extends JpaRepository<Registration, Long> {
 
     List<Registration> findByEventId(Long eventId);
+
+    long countByEventId(Long eventId);
 }

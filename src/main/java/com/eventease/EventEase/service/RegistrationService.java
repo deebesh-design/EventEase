@@ -8,6 +8,7 @@ import com.eventease.EventEase.repository.RegistrationRepository;
 import com.eventease.EventEase.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -37,14 +38,14 @@ public class RegistrationService {
                 studentRepository.findById(studentId).orElse(null);
 
         if (student == null) {
-            return null;
+            throw new RuntimeException("Student not found");
         }
 
         Event event =
                 eventRepository.findById(eventId).orElse(null);
 
         if (event == null) {
-            return null;
+            throw new RuntimeException("Event not found");
         }
 
         List<Registration> registrations =
@@ -56,7 +57,9 @@ public class RegistrationService {
             if (registration.getStudent().getId().equals(studentId)
                     && registration.getEvent().getId().equals(eventId)) {
 
-                return null;
+                throw new RuntimeException(
+                        "Student already registered for this event"
+                );
             }
         }
 
@@ -71,7 +74,7 @@ public class RegistrationService {
         }
 
         if (registeredCount >= event.getCapacity()) {
-            return null;
+            throw new RuntimeException("Event is full");
         }
 
         Registration registration = new Registration();
@@ -83,7 +86,7 @@ public class RegistrationService {
     }
 
     // =====================================================
-    // READ ALL REGISTRATIONS
+    // READ ALL
     // =====================================================
 
     public List<Registration> getAllRegistrations() {
@@ -92,18 +95,23 @@ public class RegistrationService {
     }
 
     // =====================================================
-    // READ ONE REGISTRATION
+    // READ ONE
     // =====================================================
 
     public Registration getRegistrationById(Long id) {
 
-        return registrationRepository
-                .findById(id)
-                .orElse(null);
+        Registration registration =
+                registrationRepository.findById(id).orElse(null);
+
+        if (registration == null) {
+            throw new RuntimeException("Registration not found");
+        }
+
+        return registration;
     }
 
     // =====================================================
-    // UPDATE REGISTRATION
+    // UPDATE
     // =====================================================
 
     public Registration updateRegistration(
@@ -115,21 +123,21 @@ public class RegistrationService {
                 registrationRepository.findById(id).orElse(null);
 
         if (existingRegistration == null) {
-            return null;
+            throw new RuntimeException("Registration not found");
         }
 
         Student student =
                 studentRepository.findById(studentId).orElse(null);
 
         if (student == null) {
-            return null;
+            throw new RuntimeException("Student not found");
         }
 
         Event event =
                 eventRepository.findById(eventId).orElse(null);
 
         if (event == null) {
-            return null;
+            throw new RuntimeException("Event not found");
         }
 
         List<Registration> registrations =
@@ -142,7 +150,9 @@ public class RegistrationService {
                     && registration.getStudent().getId().equals(studentId)
                     && registration.getEvent().getId().equals(eventId)) {
 
-                return null;
+                throw new RuntimeException(
+                        "Student already registered for this event"
+                );
             }
         }
 
@@ -159,7 +169,7 @@ public class RegistrationService {
         }
 
         if (registeredCount >= event.getCapacity()) {
-            return null;
+            throw new RuntimeException("Event is full");
         }
 
         existingRegistration.setStudent(student);
@@ -177,17 +187,49 @@ public class RegistrationService {
         Registration registration =
                 registrationRepository.findById(id).orElse(null);
 
-        if (registration != null) {
-
-            registrationRepository.delete(registration);
+        if (registration == null) {
+            throw new RuntimeException("Registration not found");
         }
+
+        Event event = registration.getEvent();
+
+        // Convert event date from String to LocalDate
+        LocalDate eventDate;
+
+        try {
+            eventDate = LocalDate.parse(event.getDate());
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Invalid event date. Use format YYYY-MM-DD"
+            );
+        }
+
+        // Get today's date
+        LocalDate today = LocalDate.now();
+
+        // Cancellation is allowed only before event date
+        if (!today.isBefore(eventDate)) {
+
+            throw new RuntimeException(
+                    "Registration cannot be cancelled on or after the event date"
+            );
+        }
+
+        registrationRepository.delete(registration);
     }
 
     // =====================================================
-    // GET REGISTRATIONS FOR AN EVENT
+    // GET REGISTRATIONS FOR EVENT
     // =====================================================
 
     public List<Registration> getRegistrationsByEvent(Long eventId) {
+
+        Event event =
+                eventRepository.findById(eventId).orElse(null);
+
+        if (event == null) {
+            throw new RuntimeException("Event not found");
+        }
 
         return registrationRepository.findByEventId(eventId);
     }

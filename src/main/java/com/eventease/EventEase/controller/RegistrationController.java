@@ -16,10 +16,7 @@ public class RegistrationController {
         this.service = service;
     }
 
-    // =====================================================
-    // CREATE REGISTRATION
-    // =====================================================
-
+    // CREATE
     @PostMapping
     public Registration registerStudent(
             @RequestParam Long studentId,
@@ -28,20 +25,14 @@ public class RegistrationController {
         return service.registerStudent(studentId, eventId);
     }
 
-    // =====================================================
-    // READ ALL REGISTRATIONS
-    // =====================================================
-
+    // READ ALL
     @GetMapping
     public List<Registration> getAllRegistrations() {
 
         return service.getAllRegistrations();
     }
 
-    // =====================================================
-    // READ ONE REGISTRATION
-    // =====================================================
-
+    // READ ONE
     @GetMapping("/{id}")
     public Registration getRegistrationById(
             @PathVariable Long id) {
@@ -49,10 +40,7 @@ public class RegistrationController {
         return service.getRegistrationById(id);
     }
 
-    // =====================================================
-    // UPDATE REGISTRATION
-    // =====================================================
-
+    // UPDATE
     @PutMapping("/{id}")
     public Registration updateRegistration(
             @PathVariable Long id,
@@ -66,10 +54,7 @@ public class RegistrationController {
         );
     }
 
-    // =====================================================
-    // DELETE / CANCEL REGISTRATION
-    // =====================================================
-
+    // DELETE / CANCEL
     @DeleteMapping("/{id}")
     public String deleteRegistration(
             @PathVariable Long id) {
@@ -79,10 +64,7 @@ public class RegistrationController {
         return "Registration cancelled successfully";
     }
 
-    // =====================================================
-    // GET REGISTRATIONS FOR AN EVENT
-    // =====================================================
-
+    // GET REGISTRATIONS FOR EVENT
     @GetMapping("/event/{eventId}")
     public List<Registration> getRegistrationsByEvent(
             @PathVariable Long eventId) {
