@@ -1,5 +1,6 @@
 package com.eventease.EventEase.controller;
 
+import com.eventease.EventEase.dto.OrganizerDTO;
 import com.eventease.EventEase.entity.Organizer;
 import com.eventease.EventEase.service.OrganizerService;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,14 @@ public class OrganizerController {
 
     // CREATE
     @PostMapping
-    public Organizer addOrganizer(@RequestBody Organizer organizer) {
+    public Organizer addOrganizer(@RequestBody OrganizerDTO dto) {
+
+        Organizer organizer = new Organizer();
+
+        organizer.setName(dto.getName());
+        organizer.setEmail(dto.getEmail());
+        organizer.setPassword(dto.getPassword());
+
         return service.addOrganizer(organizer);
     }
 
@@ -38,7 +46,13 @@ public class OrganizerController {
     @PutMapping("/{id}")
     public Organizer updateOrganizer(
             @PathVariable Long id,
-            @RequestBody Organizer organizer) {
+            @RequestBody OrganizerDTO dto) {
+
+        Organizer organizer = new Organizer();
+
+        organizer.setName(dto.getName());
+        organizer.setEmail(dto.getEmail());
+        organizer.setPassword(dto.getPassword());
 
         return service.updateOrganizer(id, organizer);
     }
