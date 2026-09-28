@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+        <title>EventEase - College Event Registration</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVIGATION BAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        EventEase
+    </div>
+
+    <div class="nav-links">
+
+        <button onclick="showSection('homeSection')">
+            Home
+        </button>
+
+        <button onclick="showSection('studentLoginSection')">
+            Student
+        </button>
+
+        <button onclick="showSection('organizerLoginSection')">
+            Organizer
+        </button>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     HOME SECTION
+===================================================== -->
+
+<section id="homeSection" class="page-section active-section">
+
+    <div class="hero">
+
+        <h1>Welcome to EventEase</h1>
+
+        <p>
+            College Event Registration System
+        </p>
+
+        <p class="description">
+            Easily discover college events, register for events,
+            and manage your registrations in one place.
+        </p>
+
+        <div class="home-buttons">
+
+            <button
+                    class="primary-button"
+                    onclick="showSection('studentLoginSection')">
+
+                Student Login
+
+            </button>
+
+            <button
+                    class="secondary-button"
+                    onclick="showSection('organizerLoginSection')">
+
+                Organizer Login
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- BASIC FEATURES -->
+
+    <div class="features">
+
+        <div class="feature-card">
+
+            <h3>Discover Events</h3>
+
+            <p>
+                View available technical and cultural events.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <h3>Easy Registration</h3>
+
+            <p>
+                Register for events while seats are available.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <h3>Manage Events</h3>
+
+            <p>
+                Organizers can create and manage their events.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STUDENT LOGIN
+===================================================== -->
+
+<section id="studentLoginSection" class="page-section">
+
+    <div class="form-container">
+
+        <h2>Student Login</h2>
+
+        <form id="studentLoginForm">
+
+            <label>Email</label>
+
+            <input
+                    type="email"
+                    id="studentLoginEmail"
+                    placeholder="Enter your email"
+                    required>
+
+
+            <label>Password</label>
+
+            <input
+                    type="password"
+                    id="studentLoginPassword"
+                    placeholder="Enter your password"
+                    required>
+
+
+            <button type="submit" class="primary-button">
+                Login
+            </button>
+
+        </form>
+
+        <p id="studentLoginMessage"
+           class="message">
+        </p>
+
+
+        <p class="form-link">
+
+            Don't have an account?
+
+            <button
+                    class="text-button"
+                    onclick="showSection('studentRegisterSection')">
+
+                Register
+
+            </button>
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STUDENT REGISTER
+===================================================== -->
+
+<section id="studentRegisterSection" class="page-section">
+
+    <div class="form-container">
+
+        <h2>Student Registration</h2>
+
+        <form id="studentRegisterForm">
+
+            <label>Name</label>
+
+            <input
+                    type="text"
+                    id="studentName"
+                    placeholder="Enter your name"
+                    required>
+
+
+            <label>Email</label>
+
+            <input
+                    type="email"
+                    id="studentEmail"
+                    placeholder="Enter your email"
+                    required>
+
+
+            <label>Password</label>
+
+            <input
+                    type="password"
+                    id="studentPassword"
+                    placeholder="Create a password"
+                    required>
+
+
+            <button type="submit" class="primary-button">
+                Create Account
+            </button>
+
+        </form>
+
+        <p id="studentRegisterMessage"
+           class="message">
+        </p>
+
+
+        <p class="form-link">
+
+            Already have an account?
+
+            <button
+                    class="text-button"
+                    onclick="showSection('studentLoginSection')">
+
+                Login
+
+            </button>
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STUDENT DASHBOARD
+===================================================== -->
+
+<section id="studentDashboardSection"
+         class="page-section">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2>Student Dashboard</h2>
+
+            <p id="studentWelcome">
+                Welcome Student
+            </p>
+
+        </div>
+
+        <button
+                class="logout-button"
+                onclick="studentLogout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+
+    <!-- AVAILABLE EVENTS -->
+
+    <div class="dashboard-card">
+
+        <h3>Available Events</h3>
+
+        <div id="eventsContainer">
+
+            <p>
+                Loading events...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- MY REGISTRATIONS -->
+
+    <div class="dashboard-card">
+
+        <h3>My Registrations</h3>
+
+        <div id="studentRegistrationsContainer">
+
+            <p>
+                No registrations loaded.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ORGANIZER LOGIN
+===================================================== -->
+
+<section id="organizerLoginSection"
+         class="page-section">
+
+    <div class="form-container">
+
+        <h2>Organizer Login</h2>
+
+        <form id="organizerLoginForm">
+
+            <label>Email</label>
+
+            <input
+                    type="email"
+                    id="organizerLoginEmail"
+                    placeholder="Enter organizer email"
+                    required>
+
+
+            <label>Password</label>
+
+            <input
+                    type="password"
+                    id="organizerLoginPassword"
+                    placeholder="Enter your password"
+                    required>
+
+
+            <button type="submit" class="primary-button">
+                Login
+            </button>
+
+        </form>
+
+        <p id="organizerLoginMessage"
+           class="message">
+        </p>
+
+
+        <p class="form-link">
+
+            Don't have an account?
+
+            <button
+                    class="text-button"
+                    onclick="showSection('organizerRegisterSection')">
+
+                Register
+
+            </button>
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ORGANIZER REGISTER
+===================================================== -->
+
+<section id="organizerRegisterSection"
+         class="page-section">
+
+    <div class="form-container">
+
+        <h2>Organizer Registration</h2>
+
+        <form id="organizerRegisterForm">
+
+            <label>Name</label>
+
+            <input
+                    type="text"
+                    id="organizerName"
+                    placeholder="Enter organizer name"
+                    required>
+
+
+            <label>Email</label>
+
+            <input
+                    type="email"
+                    id="organizerEmail"
+                    placeholder="Enter organizer email"
+                    required>
+
+
+            <label>Password</label>
+
+            <input
+                    type="password"
+                    id="organizerPassword"
+                    placeholder="Create a password"
+                    required>
+
+
+            <button type="submit" class="primary-button">
+                Create Account
+            </button>
+
+        </form>
+
+        <p id="organizerRegisterMessage"
+           class="message">
+        </p>
+
+
+        <p class="form-link">
+
+            Already have an account?
+
+            <button
+                    class="text-button"
+                    onclick="showSection('organizerLoginSection')">
+
+                Login
+
+            </button>
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ORGANIZER DASHBOARD
+===================================================== -->
+
+<section id="organizerDashboardSection"
+         class="page-section">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2>Organizer Dashboard</h2>
+
+            <p id="organizerWelcome">
+                Welcome Organizer
+            </p>
+
+        </div>
+
+        <button
+                class="logout-button"
+                onclick="organizerLogout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+
+    <!-- CREATE EVENT -->
+
+    <div class="dashboard-card">
+
+        <h3>Create New Event</h3>
+
+        <form id="createEventForm">
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>Event Title</label>
+
+                    <input
+                            type="text"
+                            id="eventTitle"
+                            placeholder="Enter event title"
+                            required>
+
+                </div>
+
+
+                <div>
+
+                    <label>Date</label>
+
+                    <input
+                            type="date"
+                            id="eventDate"
+                            required>
+
+                </div>
+
+
+                <div>
+
+                    <label>Venue</label>
+
+                    <input
+                            type="text"
+                            id="eventVenue"
+                            placeholder="Enter venue"
+                            required>
+
+                </div>
+
+
+                <div>
+
+                    <label>Capacity</label>
+
+                    <input
+                            type="number"
+                            id="eventCapacity"
+                            placeholder="Enter capacity"
+                            min="1"
+                            required>
+
+                </div>
+
+            </div>
+
+
+            <button
+                    type="submit"
+                    class="primary-button">
+
+                Create Event
+
+            </button>
+
+        </form>
+
+        <p id="createEventMessage"
+           class="message">
+        </p>
+
+    </div>
+
+
+    <!-- MY EVENTS -->
+
+    <div class="dashboard-card">
+
+        <h3>My Events</h3>
+
+        <div id="organizerEventsContainer">
+
+            <p>
+                Loading events...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- EVENT REGISTRATIONS -->
+
+    <div class="dashboard-card">
+
+        <h3>Event Registrations</h3>
+
+        <div id="eventRegistrationsContainer">
+
+            <p>
+                Select an event to view registrations.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     EDIT EVENT MODAL
+===================================================== -->
+
+<section id="editEventSection"
+         class="page-section">
+
+    <div class="form-container">
+
+        <h2>Edit Event</h2>
+
+        <form id="editEventForm">
+
+            <input
+                    type="hidden"
+                    id="editEventId">
+
+
+            <label>Event Title</label>
+
+            <input
+                    type="text"
+                    id="editEventTitle"
+                    required>
+
+
+            <label>Date</label>
+
+            <input
+                    type="date"
+                    id="editEventDate"
+                    required>
+
+
+            <label>Venue</label>
+
+            <input
+                    type="text"
+                    id="editEventVenue"
+                    required>
+
+
+            <label>Capacity</label>
+
+            <input
+                    type="number"
+                    id="editEventCapacity"
+                    min="1"
+                    required>
+
+
+            <button
+                    type="submit"
+                    class="primary-button">
+
+                Update Event
+
+            </button>
+
+
+            <button
+                    type="button"
+                    class="secondary-button"
+                    onclick="showSection('organizerDashboardSection')">
+
+                Cancel
+
+            </button>
+
+        </form>
+
+        <p id="editEventMessage"
+           class="message">
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <p>
+        © 2026 EventEase - College Event Registration System
+    </p>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="app.js"></script>
+
+</body>
+
+</html></title>
+</head>
+<body>
+
+</body>
+</html>
