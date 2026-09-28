@@ -8,7 +8,6 @@ import java.util.List;
 
 @Service
 public class OrganizerService {
-
     private final OrganizerRepository repository;
     public OrganizerService(OrganizerRepository repository) {
         this.repository = repository;
@@ -21,5 +20,21 @@ public class OrganizerService {
     }
     public Organizer getOrganizerById(Long id) {
         return repository.findById(id).orElse(null);
+    }
+    public Organizer updateOrganizer(Long id, Organizer organizer) {
+
+        Organizer existingOrganizer = repository.findById(id).orElse(null);
+
+        if (existingOrganizer == null) {
+            return null;
+        }
+
+        existingOrganizer.setName(organizer.getName());
+        existingOrganizer.setEmail(organizer.getEmail());
+
+        return repository.save(existingOrganizer);
+    }
+    public void deleteOrganizer(Long id) {
+        repository.deleteById(id);
     }
 }
